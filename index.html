@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>사주 명식 - 운명의 나침반</title>
+    <script>
+        window.addEventListener('error', function(e) {
+            alert('Error: ' + e.message + ' at ' + e.filename + ':' + e.lineno);
+            document.body.innerHTML = '<div style="color:red; font-size:20px; padding:20px;">' + e.message + ' at ' + e.lineno + '</div>';
+        });
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- Screen 1: 사주 정보 입력 -->
+        <main id="screen-input" class="screen active">
+            <header class="app-header">
+                <button class="icon-btn back-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1 class="header-title" id="input-header-title">사주 정보 입력</h1>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <!-- 추가 완료 (추가 모드일 때만 표시) -->
+                    <button class="text-btn" id="add-complete-btn" style="display:none; color: #3498db; font-weight: bold; background: none; border: 1px solid rgba(52,152,219,0.4); border-radius: 8px; padding: 4px 10px; font-size: 0.85rem; cursor: pointer;">추가 완료</button>
+                    <!-- 수정 완료 (수정 모드일 때만 표시) -->
+                    <button class="text-btn" id="edit-complete-btn" style="display:none; color: #2ecc71; font-weight: bold; background: none; border: 1px solid rgba(46,204,113,0.4); border-radius: 8px; padding: 4px 10px; font-size: 0.85rem; cursor: pointer;">수정 완료</button>
+                    <button class="text-btn" id="input-add-btn" style="color: var(--text-main); font-weight: bold; background: none; border: none; font-size: 0.95rem; cursor: pointer;">추가</button>
+                    <button class="text-btn" id="open-list-btn" style="color: var(--primary-gold); font-weight: bold; background: none; border: none; font-size: 0.95rem; cursor: pointer;">리스트</button>
+                </div>
+            </header>
+            <!-- 추가 모드 배너 -->
+            <div id="add-mode-banner" style="display:none; background: rgba(52,152,219,0.1); border-bottom: 1px solid rgba(52,152,219,0.3); padding: 6px 16px; text-align:center; font-size:0.8rem; color:#3498db;">
+                <i class="fa-solid fa-user-plus"></i> 추가 모드 — 입력 후 <strong>추가 완료</strong>를 눌러 저장하세요
+            </div>
+            <!-- 수정 모드 배너 -->
+            <div id="edit-mode-banner" style="display:none; background: rgba(46,204,113,0.1); border-bottom: 1px solid rgba(46,204,113,0.3); padding: 6px 16px; text-align:center; font-size:0.8rem; color:#2ecc71;">
+                <i class="fa-solid fa-pen-to-square"></i> 수정 모드 — 변경 후 <strong>수정 완료</strong>를 눌러주세요
+            </div>
+
+            <div class="content-area">
+                <div class="form-container">
+                    <!-- 이름 -->
+                    <div class="form-group">
+                        <label for="name">이름 <span class="optional">(선택 사항)</span></label>
+                        <input type="text" id="name" placeholder="홍길동" class="input-field">
+                    </div>
+
+                    <!-- 성별 -->
+                    <div class="form-group">
+                        <label>성별</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="gender" value="M" checked>
+                                <span class="radio-btn">남성</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="gender" value="F">
+                                <span class="radio-btn">여성</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 달력 종류 -->
+                    <div class="form-group">
+                        <label>달력 종류</label>
+                        <div class="radio-group type-calendar">
+                            <label class="radio-label">
+                                <input type="radio" name="calendar" value="solar" checked>
+                                <span class="radio-btn">양력</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="calendar" value="lunar">
+                                <span class="radio-btn">음력</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="calendar" value="lunar_leap">
+                                <span class="radio-btn">음력(윤달)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 생년월일 -->
+                    <div class="form-group">
+                        <label>생년월일</label>
+                        <div class="date-inputs">
+                            <div class="select-wrapper">
+                                <select id="year" class="input-select"></select>
+                                <i class="fa-solid fa-chevron-down select-icon"></i>
+                            </div>
+                            <div class="select-wrapper">
+                                <select id="month" class="input-select"></select>
+                                <i class="fa-solid fa-chevron-down select-icon"></i>
+                            </div>
+                            <div class="select-wrapper">
+                                <select id="day" class="input-select"></select>
+                                <i class="fa-solid fa-chevron-down select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 사주 보정 옵션 (절기 및 야자시) -->
+                    <div class="form-group">
+                        <label>사주 보정 옵션 (선택)</label>
+                        <div style="display: flex; flex-direction: column; gap: 10px; background-color: var(--surface-color); padding: 12px; border-radius: var(--radius-md); border: 1px solid rgba(255, 255, 255, 0.05);">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="use-yajasi">
+                                <span class="checkmark"></span>
+                                <strong>야자시 적용</strong> (23:30~24:00 출생 시 전날 일주 유지)
+                            </label>
+                            <label class="checkbox-label" style="margin-top: 5px;">
+                                <input type="checkbox" id="adjust-month">
+                                <span class="checkmark"></span>
+                                <strong>절기 당일 월주 보정</strong> (절입 시각 경계자용)
+                            </label>
+                            <div id="month-adjust-container" style="display: none; margin-top: 5px;">
+                                <select id="month-shift" class="input-select" style="padding: 8px 12px; font-size: 0.85rem;">
+                                    <option value="0">기본 계산 적용</option>
+                                    <option value="-1">이전 달 기운 적용 (절기 변경 전)</option>
+                                    <option value="1">다음 달 기운 적용 (절기 변경 후)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 태어난 시 -->
+                    <div class="form-group">
+                        <div class="label-with-check">
+                            <label>태어난 시</label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="unknown-time">
+                                <span class="checkmark"></span>
+                                태어난 시를 모름
+                            </label>
+                        </div>
+                        <div class="time-inputs" id="time-inputs-container">
+                            <div class="select-wrapper">
+                                <select id="hour" class="input-select"></select>
+                                <i class="fa-solid fa-chevron-down select-icon"></i>
+                            </div>
+                            <span class="time-separator">:</span>
+                            <div class="select-wrapper">
+                                <select id="minute" class="input-select"></select>
+                                <i class="fa-solid fa-chevron-down select-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="app-footer">
+                <button id="btn-analyze" class="primary-btn">사주 분석하기 <i class="fa-solid fa-wand-magic-sparkles"></i></button>
+            </footer>
+        </main>
+        
+        <!-- Screen 2: 사주 명식 & 오행 결과 -->
+        <main id="screen-result" class="screen">
+            <header class="app-header">
+                <button class="icon-btn back-btn" id="back-to-input"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1 class="header-title" id="result-title">홍길동님의 사주명식</h1>
+                <div style="display: flex; gap: 10px;">
+                    <button class="text-btn" id="save-current-btn" style="color: var(--primary-gold); font-weight: bold; background: none; border: none; font-size: 0.95rem; cursor: pointer;">저장</button>
+                    <button class="icon-btn share-btn"><i class="fa-solid fa-share-nodes"></i></button>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- 사주명식 표 -->
+                <section class="result-section">
+                    <h2 class="section-title">사주 원국</h2>
+                    <div class="saju-table">
+                        <div class="saju-header">
+                            <div>시주(時柱)</div>
+                            <div>일주(日柱)</div>
+                            <div>월주(月柱)</div>
+                            <div>년주(年柱)</div>
+                        </div>
+                        <div class="saju-row top-row"> <!-- 천간 -->
+                            <div id="hour-stem" class="saju-cell element-fire">
+                                <span class="shipseong shipseong-top">+화/정재</span>
+                                <span class="hanja">丙</span>
+                                <span class="hangul">병</span>
+                            </div>
+                            <div id="day-stem" class="saju-cell element-water">
+                                <span class="shipseong shipseong-top">일간(나)</span>
+                                <span class="hanja">癸</span>
+                                <span class="hangul">계</span>
+                            </div>
+                            <div id="month-stem" class="saju-cell element-earth">
+                                <span class="shipseong shipseong-top">+토/정관</span>
+                                <span class="hanja">戊</span>
+                                <span class="hangul">무</span>
+                            </div>
+                            <div id="year-stem" class="saju-cell element-metal">
+                                <span class="shipseong shipseong-top">+금/정인</span>
+                                <span class="hanja">庚</span>
+                                <span class="hangul">경</span>
+                            </div>
+                        </div>
+                        <div class="saju-row bottom-row"> <!-- 지지 -->
+                            <div id="hour-branch" class="saju-cell element-fire">
+                                <span class="hanja">午</span>
+                                <span class="hangul">오</span>
+                                <span class="shipseong shipseong-bottom">-화/편재</span>
+                            </div>
+                            <div id="day-branch" class="saju-cell element-metal">
+                                <span class="hanja">酉</span>
+                                <span class="hangul">유</span>
+                                <span class="shipseong shipseong-bottom">-금/편인</span>
+                            </div>
+                            <div id="month-branch" class="saju-cell element-wood">
+                                <span class="hanja">寅</span>
+                                <span class="hangul">인</span>
+                                <span class="shipseong shipseong-bottom">+목/상관</span>
+                            </div>
+                            <div id="year-branch" class="saju-cell element-earth">
+                                <span class="hanja">戌</span>
+                                <span class="hangul">술</span>
+                                <span class="shipseong shipseong-bottom">+토/정관</span>
+                            </div>
+                        </div>
+
+                        <!-- 대운 (사진 형태) -->
+                        <div class="saju-row extra-row" id="daewun-row" style="margin: 8px 0;">
+                            <div class="saju-cell-extra full-width-cell" style="flex: 1; padding: 10px; background: var(--surface-color-light); border: 1px solid rgba(255, 255, 255, 0.05); flex-direction: column; align-items: stretch; gap: 8px;">
+                                <div style="color: var(--primary-gold); font-weight: bold; font-size: 0.85rem; text-align: left; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                                    <i class="fa-solid fa-hourglass-half"></i> 대운 (大運)
+                                </div>
+                                <div id="daewun-timeline" style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px;">
+                                    <!-- Dynamic Daewun populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 오행 개수 요약 row (사진 형태) -->
+                        <div class="saju-row extra-row" style="background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.1); border-radius: 8px; margin: 8px 0; padding: 10px; font-weight: bold; justify-content: space-evenly; display: flex;" id="element-breakdown-row">
+                            <span class="element-wood" style="font-size: 0.9rem;">木(<span id="cnt-wood">0</span>)</span>
+                            <span class="element-fire" style="font-size: 0.9rem;">火(<span id="cnt-fire">0</span>)</span>
+                            <span class="element-earth" style="font-size: 0.9rem;">土(<span id="cnt-earth">0</span>)</span>
+                            <span class="element-metal" style="font-size: 0.9rem;">金(<span id="cnt-metal">0</span>)</span>
+                            <span class="element-water" style="font-size: 0.9rem;">水(<span id="cnt-water">0</span>)</span>
+                        </div>
+                        
+                        <!-- 추가 정보 (지장간, 12운성, 신살) -->
+                        <div class="saju-row extra-row">
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">지장간</div>
+                                <div id="hour-jjg" class="extra-value jjg-value">丙정재<br>己편관<br>丁편재</div>
+                            </div>
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">지장간</div>
+                                <div id="day-jjg" class="extra-value jjg-value"><br>庚정인<br>辛편인</div>
+                            </div>
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">지장간</div>
+                                <div id="month-jjg" class="extra-value jjg-value">戊정관<br>丙정재<br>甲상관</div>
+                            </div>
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">지장간</div>
+                                <div id="year-jjg" class="extra-value jjg-value">辛편인<br>丁편재<br>戊정관</div>
+                            </div>
+                        </div>
+                        
+                        <div class="saju-row extra-row">
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">12운성</div>
+                                <div id="hour-un" class="extra-value">절(絶)</div>
+                            </div>
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">12운성</div>
+                                <div id="day-un" class="extra-value">병(病)</div>
+                            </div>
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">12운성</div>
+                                <div id="month-un" class="extra-value">목욕(浴)</div>
+                            </div>
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">12운성</div>
+                                <div id="year-un" class="extra-value">쇠(衰)</div>
+                            </div>
+                        </div>
+
+                        <!-- 지지 작용 (합·형·충·파·해) -->
+                        <div class="saju-row extra-row" id="interactions-row" style="margin-top: 4px;">
+                            <div class="saju-cell-extra full-width-cell" style="flex: 1; padding: 10px; min-height: auto; background: rgba(231, 76, 60, 0.08); border: 1px solid rgba(231, 76, 60, 0.2); flex-direction: row; justify-content: center; gap: 10px; margin-bottom: 4px;">
+                                <span style="color: #e74c3c; font-weight: bold; font-size: 0.8rem;">지지 작용:</span>
+                                <span id="saju-interactions" style="font-size: 0.85rem; font-weight: bold; color: var(--text-main);">합·형·충·파·해 분석 중...</span>
+                            </div>
+                        </div>
+                        <div class="saju-row extra-row" id="stem-interactions-row" style="margin-top: 0px;">
+                            <div class="saju-cell-extra full-width-cell" style="flex: 1; padding: 10px; min-height: auto; background: rgba(52, 152, 219, 0.08); border: 1px solid rgba(52, 152, 219, 0.2); flex-direction: row; justify-content: center; gap: 10px;">
+                                <span style="color: #3498db; font-weight: bold; font-size: 0.8rem;">천간 작용:</span>
+                                <span id="stem-interactions" style="font-size: 0.85rem; font-weight: bold; color: var(--text-main);">합·충 분석 중...</span>
+                            </div>
+                        </div>
+
+
+                        <div class="saju-row extra-row">
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">신살</div>
+                                <div id="hour-shinsal" class="extra-value jjg-value">-</div>
+                            </div>
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">신살</div>
+                                <div id="day-shinsal" class="extra-value jjg-value">-</div>
+                            </div>
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">신살</div>
+                                <div id="month-shinsal" class="extra-value jjg-value">-</div>
+                            </div>
+                            <div class="saju-cell-extra">
+                                <div class="extra-label">신살</div>
+                                <div id="year-shinsal" class="extra-value jjg-value">-</div>
+                            </div>
+                        </div>
+                        <div class="saju-row extra-row">
+                            <div class="saju-cell-extra full-width-cell">
+                                <span class="info-tag"><strong>월령(月令)</strong> <span id="wolryeong">甲</span></span>
+                                <span class="info-tag"><strong>년공망</strong> <span id="year-gongmang">寅卯</span></span>
+                                <span class="info-tag"><strong>일공망</strong> <span id="day-gongmang">戌亥</span></span>
+                                <span class="info-tag" id="samjae-wrapper" style="background: rgba(231, 76, 60, 0.1); color: #e74c3c; border: 1px solid rgba(231, 76, 60, 0.2);"><strong>삼재</strong> <span id="samjae">해당없음</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 지지 상호작용 분석 -->
+                <section class="result-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 class="section-title" style="margin-bottom: 0;">합·형·충·파·해 및 신살</h2>
+                        <input type="date" id="interaction-date" class="input-select" style="width: 140px; padding: 6px 10px; font-size: 0.85rem; border-color: rgba(212, 175, 55, 0.3);">
+                    </div>
+                    <div class="interaction-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div style="background: var(--surface-color-light); padding: 12px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.1);">
+                                    <div style="font-size: 0.75rem; color: var(--primary-gold); margin-bottom: 5px; font-weight: 700;">합 (合)</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-main);" id="hap-analysis">묘술합(卯戌合), 인오술(寅午戌)</div>
+                                </div>
+                                <div style="background: var(--surface-color-light); padding: 12px; border-radius: 12px; border: 1px solid rgba(231, 76, 60, 0.1);">
+                                    <div style="font-size: 0.75rem; color: #e74c3c; margin-bottom: 5px; font-weight: 700;">충 (沖)</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-main);" id="chung-analysis">자오충(子午沖), 인신충(寅申沖)</div>
+                                </div>
+                                <div style="background: var(--surface-color-light); padding: 12px; border-radius: 12px; border: 1px solid rgba(241, 196, 15, 0.1);">
+                                    <div style="font-size: 0.75rem; color: #f1c40f; margin-bottom: 5px; font-weight: 700;">형/파/해 (刑/破/害)</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-main);" id="hyeong-pa-hae-analysis">축술미 삼형, 인사신, 유술해</div>
+                                </div>
+                                <div style="background: var(--surface-color-light); padding: 12px; border-radius: 12px; border: 1px solid rgba(173, 181, 189, 0.1);">
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 700;">주요 신살</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-main);" id="major-shinsal-analysis">원진살, 괴강살, 귀인</div>
+                                </div>
+                            </div>
+                </section>
+
+                <!-- 생활 길흉 분석 -->
+                <section class="result-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 class="section-title" style="margin-bottom: 0;">생활 길흉 분석 (이사·방향·택일)</h2>
+                        <input type="date" id="life-fortune-date" class="input-select" style="width: 140px; padding: 6px 10px; font-size: 0.85rem; border-color: rgba(212, 175, 55, 0.3);">
+                    </div>
+                    <div class="life-guide-grid" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                        <div style="background: rgba(255, 255, 255, 0.02); padding: 15px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.1); display: flex; align-items: flex-start; gap: 15px;">
+                            <div style="width: 40px; height: 40px; background: rgba(52, 152, 219, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #3498db; flex-shrink: 0;">
+                                <i class="fa-solid fa-truck-moving"></i>
+                            </div>
+                            <div>
+                                <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 5px;">이사 및 이동운</h4>
+                                <p id="isa-desc" style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">올해는 동쪽(卯)과 북동쪽(艮) 방향으로의 이동이 길합니다. 대장군 방위와 삼살 방위가 있는 서쪽은 피하는 것이 좋습니다.</p>
+                            </div>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.02); padding: 15px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.1); display: flex; align-items: flex-start; gap: 15px;">
+                            <div style="width: 40px; height: 40px; background: rgba(46, 204, 113, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2ecc71; flex-shrink: 0;">
+                                <i class="fa-solid fa-compass"></i>
+                            </div>
+                            <div>
+                                <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 5px;">길한 방향 (행운의 방위)</h4>
+                                <p id="direction-desc" style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">사업이나 공부를 위한 책상 배치는 남쪽이 좋으며, 중요한 계약이나 미팅 시에는 북쪽에서 귀인을 만날 확률이 높습니다.</p>
+                            </div>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.02); padding: 15px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.1); display: flex; align-items: flex-start; gap: 15px;">
+                            <div style="width: 40px; height: 40px; background: rgba(241, 196, 15, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #f1c40f; flex-shrink: 0;">
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                            <div>
+                                <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 5px;">중요한 날 택일</h4>
+                                <p id="date-desc" style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">본인의 일간과 상생하는 <strong>목(木)과 수(水)</strong>의 날이 길일입니다. 특히 십이신살 중 '천살'이나 '반안살'에 해당하는 날을 고르는 것이 유리합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 인연 및 평생 분석 -->
+                <section class="result-section">
+                    <h2 class="section-title">인연 및 평생 분석</h2>
+                    <div class="relation-grid">
+                        <div class="relation-card">
+                            <i class="fa-solid fa-gem"></i>
+                            <span class="rel-label">평생운</span>
+                            <span class="rel-value" id="lifetime-desc">대기만성</span>
+                        </div>
+                        <div class="relation-card">
+                            <i class="fa-solid fa-heart"></i>
+                            <span class="rel-label">배우자운</span>
+                            <span class="rel-value" id="spouse-desc">유정(有情)</span>
+                        </div>
+                        <div class="relation-card">
+                            <i class="fa-solid fa-house-user"></i>
+                            <span class="rel-label">부모운</span>
+                            <span class="rel-value" id="parent-desc">자수성가</span>
+                        </div>
+                        <div class="relation-card">
+                            <div class="rel-icon-stack">
+                                <i class="fa-solid fa-user"></i>
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <span class="rel-label">형제자매</span>
+                            <span class="rel-value" id="sibling-desc">우애독실</span>
+                        </div>
+                        <div class="relation-card">
+                            <i class="fa-solid fa-child"></i>
+                            <span class="rel-label">자식운</span>
+                            <span class="rel-value" id="child-desc">현모양처</span>
+                        </div>
+                        <div class="relation-card">
+                            <i class="fa-solid fa-users"></i>
+                            <span class="rel-label">관계운</span>
+                            <span class="rel-value" id="relation-desc">광폭인맥</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 대운 (Daewun) -->
+                <section class="result-section">
+                    <h2 class="section-title">대운(大運) 흐름</h2>
+                    <div id="daewun-meta" style="display:flex; gap:16px; margin-bottom:10px; font-size:0.8rem; color:var(--text-muted); padding: 0 2px;">
+                        <span>방향: <strong id="daewun-direction" style="color:var(--primary-gold);">-</strong></span>
+                        <span>시작: <strong id="daewun-start-age" style="color:var(--primary-gold);">-</strong>세</span>
+                    </div>
+                    <div class="daewun-container">
+                        <div class="daewun-scroll" id="daewun-scroll-container">
+                            <!-- JS로 동적 생성 -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 소운 (Minor Luck) -->
+                <section class="result-section">
+                    <h2 class="section-title">소운(세운) 흐름</h2>
+                    <div class="daewun-container">
+                        <div class="daewun-scroll" id="seowun-scroll-container">
+                            <div class="daewun-item">
+                                <div class="daewun-age">2026</div>
+                                <div class="daewun-stem element-fire">丙</div>
+                                <div class="daewun-branch element-fire">午</div>
+                                <div class="daewun-age" style="margin-top: 4px; color: var(--text-muted);">57세</div>
+                            </div>
+                            <div class="daewun-item">
+                                <div class="daewun-age">2027</div>
+                                <div class="daewun-stem element-fire">丁</div>
+                                <div class="daewun-branch element-earth">未</div>
+                                <div class="daewun-age" style="margin-top: 4px; color: var(--text-muted);">58세</div>
+                            </div>
+                            <div class="daewun-item">
+                                <div class="daewun-age">2028</div>
+                                <div class="daewun-stem element-earth">戊</div>
+                                <div class="daewun-branch element-metal">申</div>
+                                <div class="daewun-age" style="margin-top: 4px; color: var(--text-muted);">59세</div>
+                            </div>
+                            <div class="daewun-item">
+                                <div class="daewun-age">2029</div>
+                                <div class="daewun-stem element-earth">己</div>
+                                <div class="daewun-branch element-metal">酉</div>
+                                <div class="daewun-age" style="margin-top: 4px; color: var(--text-muted);">60세</div>
+                            </div>
+                            <div class="daewun-item">
+                                <div class="daewun-age">2030</div>
+                                <div class="daewun-stem element-metal">庚</div>
+                                <div class="daewun-branch element-earth">戌</div>
+                                <div class="daewun-age" style="margin-top: 4px; color: var(--text-muted);">61세</div>
+                            </div>
+                            <div class="daewun-item">
+                                <div class="daewun-age">2031</div>
+                                <div class="daewun-stem element-metal">辛</div>
+                                <div class="daewun-branch element-water">亥</div>
+                                <div class="daewun-age" style="margin-top: 4px; color: var(--text-muted);">62세</div>
+                            </div>
+                            <div class="daewun-item">
+                                <div class="daewun-age">2032</div>
+                                <div class="daewun-stem element-water">壬</div>
+                                <div class="daewun-branch element-water">子</div>
+                                <div class="daewun-age" style="margin-top: 4px; color: var(--text-muted);">63세</div>
+                            </div>
+                            <div class="daewun-item">
+                                <div class="daewun-age">2033</div>
+                                <div class="daewun-stem element-water">癸</div>
+                                <div class="daewun-branch element-earth">丑</div>
+                                <div class="daewun-age" style="margin-top: 4px; color: var(--text-muted);">64세</div>
+                            </div>
+                            <div class="daewun-item">
+                                <div class="daewun-age">2034</div>
+                                <div class="daewun-stem element-wood">甲</div>
+                                <div class="daewun-branch element-wood">寅</div>
+                                <div class="daewun-age" style="margin-top: 4px; color: var(--text-muted);">65세</div>
+                            </div>
+                            <div class="daewun-item">
+                                <div class="daewun-age">2035</div>
+                                <div class="daewun-stem element-wood">乙</div>
+                                <div class="daewun-branch element-wood">卯</div>
+                                <div class="daewun-age" style="margin-top: 4px; color: var(--text-muted);">66세</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 월운 (Monthly Fortune) -->
+                <section class="result-section">
+                    <h2 class="section-title" id="wolun-title">월운(月運) 흐름</h2>
+                    <div class="daewun-container">
+                        <div class="daewun-scroll" id="wolun-scroll-container">
+                            <!-- JS로 동적 생성 -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 일운 (Daily Fortune) -->
+                <section class="result-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 class="section-title" style="margin-bottom: 0;">최근 일별 운세 (7일)</h2>
+                        <input type="date" id="daily-fortune-date" class="input-select" style="width: 140px; padding: 6px 10px; font-size: 0.85rem; border-color: rgba(212, 175, 55, 0.3);">
+                    </div>
+                    <div class="daewun-container">
+                        <div class="daewun-scroll" id="daily-fortune-container">
+                            <!-- JS로 동적 생성 -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 시간운 (Hourly Fortune) -->
+                <section class="result-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 class="section-title" style="margin-bottom: 0;">시간별 운세</h2>
+                        <input type="date" id="hourly-fortune-date" class="input-select" style="width: 140px; padding: 6px 10px; font-size: 0.85rem; border-color: rgba(212, 175, 55, 0.3);">
+                    </div>
+                    <div class="hourly-fortune-list" id="hourly-fortune-container">
+                        <!-- JS로 동적 생성 -->
+                    </div>
+                </section>
+
+                <!-- 오행 분포도 -->
+                <section class="result-section">
+                    <h2 class="section-title">오행 분포</h2>
+                    <div class="element-chart-container">
+                        <div class="element-bar-wrapper">
+                            <div class="element-label wood">목(木)</div>
+                            <div class="element-bar-bg"><div id="bar-wood" class="element-bar wood" data-width="0%" style="width: 0%;"></div></div>
+                            <div id="score-wood" class="element-percent">0%</div>
+                        </div>
+                        <div class="element-bar-wrapper">
+                            <div class="element-label fire">화(火)</div>
+                            <div class="element-bar-bg"><div id="bar-fire" class="element-bar fire" data-width="0%" style="width: 0%;"></div></div>
+                            <div id="score-fire" class="element-percent">0%</div>
+                        </div>
+                        <div class="element-bar-wrapper">
+                            <div class="element-label earth">토(土)</div>
+                            <div class="element-bar-bg"><div id="bar-earth" class="element-bar earth" data-width="0%" style="width: 0%;"></div></div>
+                            <div id="score-earth" class="element-percent">0%</div>
+                        </div>
+                        <div class="element-bar-wrapper">
+                            <div class="element-label metal">금(金)</div>
+                            <div class="element-bar-bg"><div id="bar-metal" class="element-bar metal" data-width="0%" style="width: 0%;"></div></div>
+                            <div id="score-metal" class="element-percent">0%</div>
+                        </div>
+                        <div class="element-bar-wrapper">
+                            <div class="element-label water">수(水)</div>
+                            <div class="element-bar-bg"><div id="bar-water" class="element-bar water" data-width="0%" style="width: 0%;"></div></div>
+                            <div id="score-water" class="element-percent">0%</div>
+                        </div>
+                    </div>
+                    <div class="summary-box">
+                        <i class="fa-solid fa-mountain"></i> <span><strong id="summary-name">홍길동</strong>님은 <strong class="element-earth">토(土)</strong> 기운이 가장 강합니다.</span>
+                    </div>
+                </section>
+
+                <!-- 상세 정보 -->
+                <section class="result-section">
+                    <h2 class="section-title">사주 요약</h2>
+                    <ul class="info-list" id="saju-summary-list">
+                        <li id="summary-ilgan"><strong>일간:</strong> 분석 중...</li>
+                        <li id="summary-gyeokguk"><strong>격국:</strong> 분석 중...</li>
+                        <li id="summary-strength"><strong>강약:</strong> 분석 중...</li>
+                        <li id="summary-yonghee"><strong>용희신:</strong> 분석 중...</li>
+                    </ul>
+                </section>
+            </div>
+
+            <footer class="app-footer">
+                <button id="btn-details" class="primary-btn secondary">상세 사주 분석 보기 <i class="fa-solid fa-book-open"></i></button>
+            </footer>
+        </main>
+
+        <!-- Screen 3: 종합 사주 분석 결과 -->
+        <main id="screen-details" class="screen">
+            <header class="app-header">
+                <button class="icon-btn back-btn" id="back-to-result"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1 class="header-title">종합 사주 분석</h1>
+                <button class="icon-btn share-btn"><i class="fa-solid fa-download"></i></button>
+            </header>
+
+            <div class="tabs-container">
+                <button class="tab-btn active" data-target="tab-general">총평</button>
+                <button class="tab-btn" data-target="tab-personality">성격</button>
+                <button class="tab-btn" data-target="tab-wealth">재물</button>
+                <button class="tab-btn" data-target="tab-love">애정</button>
+                <button class="tab-btn" data-target="tab-career">직업</button>
+                <button class="tab-btn" data-target="tab-relation">인연</button>
+                <button class="tab-btn" data-target="tab-specific-date">지정일</button>
+            </div>
+
+            <div class="content-area tab-content-area">
+                <!-- 총평 탭 -->
+                <section id="tab-general" class="tab-content active">
+                    <div class="analysis-card intro-card">
+                        <i class="fa-solid fa-quote-left quote-icon"></i>
+                        <p class="intro-text" id="comp-intro">"바위산 아래 흐르는 맑은 시냇물처럼, 지혜롭고 굳건하게 자신의 길을 개척해 나가는 사주입니다."</p>
+                        <i class="fa-solid fa-quote-right quote-icon right"></i>
+                    </div>
+                    
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-infinity"></i> 평생 총운</h3>
+                        <p class="analysis-text" id="comp-lifetime">초년에는 다양한 경험을 통해 기반을 닦고, 중년 이후부터는 본인의 전문 분야에서 독보적인 위치에 오르게 됩니다. 말년운이 매우 길하며 안정적인 노후가 보장된 복이 많은 사주입니다.</p>
+                    </div>
+
+                    <div class="analysis-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h3 class="analysis-title" style="margin-bottom: 0;"><i class="fa-solid fa-road"></i> 10년 단위의 운 (대운)</h3>
+                            <input type="date" id="daewun-fortune-date" class="saju-input" style="width: 140px; padding: 4px 8px; font-size: 0.85rem; height: 32px;">
+                        </div>
+                        <p class="analysis-text" id="comp-daewun">현재 대운의 흐름에 있습니다.</p>
+                    </div>
+
+                    <div class="analysis-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h3 class="analysis-title" id="comp-year-title" style="margin-bottom: 0;"><i class="fa-solid fa-calendar-day"></i> 올해의 운</h3>
+                            <input type="date" id="year-fortune-date" class="saju-input" style="width: 140px; padding: 4px 8px; font-size: 0.85rem; height: 32px;">
+                        </div>
+                        <p class="analysis-text" id="comp-year">올해는 재물운이 매우 왕성하게 들어오는 해입니다.</p>
+                    </div>
+
+                    <div class="analysis-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h3 class="analysis-title" id="comp-month-title" style="margin-bottom: 0;"><i class="fa-solid fa-moon"></i> 이달의 운세</h3>
+                            <input type="date" id="month-fortune-date" class="saju-input" style="width: 140px; padding: 4px 8px; font-size: 0.85rem; height: 32px;">
+                        </div>
+                        <p class="analysis-text" id="comp-month">이번 달은 목표했던 일이 결실을 맺기 시작하는 시기입니다.</p>
+                    </div>
+
+                    <div class="analysis-section" style="border-bottom: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <h3 class="analysis-title" style="margin-bottom: 0;"><i class="fa-solid fa-clock-rotate-left"></i> 오늘의 실시간 운세</h3>
+                            <input type="date" id="today-fortune-date" class="saju-input" style="width: 140px; padding: 4px 8px; font-size: 0.85rem; height: 32px;">
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <div style="flex: 1; background: rgba(212, 175, 55, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.2); text-align: center;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;">오늘의 운세</div>
+                                <div style="font-size: 1rem; color: var(--primary-gold); font-weight: 700;" id="comp-today-score">대길 (大吉)</div>
+                            </div>
+                            <div style="flex: 1; background: rgba(212, 175, 55, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.2); text-align: center;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;">현재 시간운</div>
+                                <div style="font-size: 1rem; color: #2ecc71; font-weight: 700;" id="comp-hour-score">평온 (安)</div>
+                            </div>
+                        </div>
+                        <p class="analysis-text" style="margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);" id="comp-today-advice">오후 3시에서 5시 사이(신시)에 중요한 미팅이나 계약을 진행하면 운의 흐름이 가장 좋습니다.</p>
+                    </div>
+
+                    <div style="margin-top: 25px; background: rgba(212, 175, 55, 0.03); padding: 18px; border-radius: 15px; border: 1px solid rgba(212, 175, 55, 0.3); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -10px; right: -10px; font-size: 4rem; color: rgba(212, 175, 55, 0.05); transform: rotate(15deg);"><i class="fa-solid fa-seedling"></i></div>
+                        <h4 style="font-size: 1rem; color: var(--primary-gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> 인생을 바꾸는 운의 조언
+                        </h4>
+                        <p style="font-size: 0.9rem; color: var(--text-main); line-height: 1.7; font-family: var(--font-title);" id="comp-advice">
+                            "운(運)이란 흐르는 물과 같아 막히면 돌아가고, 넘치면 나누어야 합니다."
+                        </p>
+                    </div>
+                </section>
+
+                <!-- 성격 탭 -->
+                <section id="tab-personality" class="tab-content">
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-user"></i> 성격 및 내면의 힘</h3>
+                        <p class="analysis-text" id="comp-personality">겉으로는 차분하고 이성적인 모습을 보이지만, 내면에는 뜨거운 열정을 품고 있습니다.</p>
+                        
+                        <div class="trait-tags" id="comp-personality-tags">
+                            <span class="tag">#성격태그</span>
+                        </div>
+                    </div>
+
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-heart-pulse" style="color: #ff4757;"></i> 건강운 및 체질</h3>
+                        <p class="analysis-text" id="comp-health">수(水) 기운이 담당하는 장기가 튼튼한 편입니다. 규칙적인 식습관과 스트레스 조절이 건강의 핵심입니다.</p>
+                    </div>
+
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-piggy-bank" style="color: #f1c40f;"></i> 금전 성향과 재물복</h3>
+                        <p class="analysis-text" id="comp-wealth-intro">재물을 관리하는 능력이 뛰어나며, 불필요한 지출을 지양하는 검소한 성향을 가지고 있습니다.</p>
+                    </div>
+
+                    <div style="margin-top: 20px; background: rgba(255, 255, 255, 0.02); padding: 15px; border-radius: 12px; border-left: 4px solid var(--primary-gold);">
+                        <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 8px;"><i class="fa-solid fa-hand-holding-heart" style="color: var(--primary-gold);"></i> 삶의 조언</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;" id="comp-personality-advice">"너무 스스로를 엄격한 잣대로 평가하지 마세요. 가끔은 여유를 가지고 주변을 돌아볼 때, 비로소 진정한 내면의 평화와 더 큰 행운이 찾아옵니다."</p>
+                    </div>
+                </section>
+
+                <!-- 재물 탭 -->
+                <section id="tab-wealth" class="tab-content">
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-coins gold"></i> 금전운의 흐름</h3>
+                        <p class="analysis-text" id="comp-wealth-flow">안정적인 재물운을 가지고 있습니다.</p>
+                    </div>
+
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-chart-line" style="color: #2ecc71;"></i> 추천 투자 종목</h3>
+                        <div class="investment-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                            <div style="background: rgba(46, 204, 113, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(46, 204, 113, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #2ecc71; margin-bottom: 5px;"><i class="fa-solid fa-house"></i> 부동산</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-muted);" id="wealth-invest-realestate">토(土) 기운을 활용한 실물 자산 투자.</p>
+                            </div>
+                            <div style="background: rgba(46, 204, 113, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(46, 204, 113, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #2ecc71; margin-bottom: 5px;"><i class="fa-solid fa-chart-pie"></i> 주식/증권</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-muted);" id="wealth-invest-stock">우량주 중심의 장기 투자.</p>
+                            </div>
+                            <div style="background: rgba(255, 215, 0, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(255, 215, 0, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #d4af37; margin-bottom: 5px;"><i class="fa-solid fa-coins"></i> 금/현물</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-muted);" id="wealth-invest-gold">금(金) 기운을 보강하는 안전 자산.</p>
+                            </div>
+                            <div style="background: rgba(155, 89, 182, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(155, 89, 182, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #9b59b2; margin-bottom: 5px;"><i class="fa-brands fa-bitcoin"></i> 가상자산</h4>
+                                <p style="font-size: 0.7rem; color: var(--text-muted);" id="wealth-invest-crypto">변동성을 활용한 소액 분산 투자.</p>
+                            </div>
+                            <div style="grid-column: span 2; background: rgba(46, 204, 113, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(46, 204, 113, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #2ecc71; margin-bottom: 5px;"><i class="fa-solid fa-vault"></i> 장기 저축 및 채권</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted);" id="wealth-invest-saving">복리 효과를 노리는 보수적인 자산 방어 전략.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-hourglass-half" style="color: #f1c40f;"></i> 투자하기 좋은 시기</h3>
+                        <div style="background: rgba(255, 255, 255, 0.03); padding: 15px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2);">
+                            <p class="analysis-text" style="font-size: 0.85rem; margin-bottom: 10px;" id="wealth-timing-intro">본인의 대운 흐름상 <strong>금(金)과 수(水)</strong>의 기운이 들어오는 시기에 투자 수익이 극대화됩니다.</p>
+                            <ul style="list-style: none; padding: 0; font-size: 0.8rem; color: var(--text-muted); line-height: 1.8;">
+                                <li id="wealth-timing-good"><i class="fa-solid fa-calendar-check" style="color: var(--primary-gold); margin-right: 5px;"></i> <strong>최적 시기:</strong> 가을(9~11월) 및 겨울(12~2월)</li>
+                                <li id="wealth-timing-bad"><i class="fa-solid fa-circle-exclamation" style="color: #e74c3c; margin-right: 5px;"></i> <strong>주의 시기:</strong> 화(火) 기운이 강한 한여름에는 무리한 투자를 피하세요.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; background: rgba(255, 255, 255, 0.02); padding: 15px; border-radius: 12px; border-left: 4px solid #2ecc71;">
+                        <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 8px;"><i class="fa-solid fa-sack-dollar" style="color: #2ecc71;"></i> 재무 관리 조언</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;" id="wealth-advice-manage">"자산을 불리는 것만큼이나 '지키는 것'이 중요한 사주입니다. 주변의 권유에 흔들리지 말고, 본인만의 명확한 투자 원칙을 고수하세요. 특히 문서와 관련된 계약 시에는 전문가의 검토를 거치는 것이 큰 손실을 막는 비결입니다."</p>
+                    </div>
+
+                    <div style="margin-top: 15px; background: rgba(52, 152, 219, 0.03); padding: 15px; border-radius: 12px; border-left: 4px solid #3498db;">
+                        <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 8px;"><i class="fa-solid fa-gem" style="color: #3498db;"></i> 재물운을 높이는 습관 (개운법)</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;" id="wealth-advice-habit">"평소 지갑을 깨끗하게 정리하고 영수증을 쌓아두지 않는 습관이 금전운을 맑게 합니다. 또한, 북서쪽 방향에 밝은 조명을 두거나 흰색/회색 계열의 소품을 활용하면 본인의 금(金) 기운을 보강하여 재물이 머무는 힘이 강해집니다."</p>
+                    </div>
+                </section>
+
+                <!-- 애정 탭 -->
+                <section id="tab-love" class="tab-content">
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-heart pink"></i> 연애와 인연 (개인)</h3>
+                        <p class="analysis-text" id="love-style">신중하고 배려심이 깊어 연애에 있어서도 가벼운 만남보다는 진지하고 깊이 있는 관계를 선호합니다.</p>
+                        <p class="analysis-text" id="love-ideal">자신의 약한 기운을 보완해 줄 수 있는 금(金) 기운이나 수(水) 기운을 가진 사람과 좋은 궁합을 이룹니다.</p>
+                    </div>
+
+                    <div style="margin-top: 15px; background: rgba(255, 71, 87, 0.03); padding: 15px; border-radius: 12px; border-left: 4px solid #ff4757;">
+                        <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 8px;"><i class="fa-solid fa-wand-sparkles" style="color: #ff4757;"></i> 사랑을 부르는 조언</h4>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;" id="love-advice">"자신을 먼저 사랑할 때 비로소 타인과의 진정한 교감이 시작됩니다. 핑크나 로즈골드 계열의 액세서리를 착용하거나, 침실의 조명을 따뜻한 색감으로 바꾸어 보세요. 본인의 부드러운 매력이 극대화되어 좋은 인연이 자연스럽게 찾아올 것입니다."</p>
+                    </div>
+
+                    <!-- 소중한 인연과의 조화 [궁합] -->
+                    <div class="analysis-section compatibility-section" style="margin-top: 30px; border-top: 1px dashed rgba(212, 175, 55, 0.2); padding-top: 25px;">
+                        <h3 class="analysis-title"><i class="fa-solid fa-people-arrows pink"></i> 소중한 인연과의 [궁합]</h3>
+                        <p class="analysis-text" style="margin-bottom: 20px;">함께 알고 싶은 상대방의 정보를 입력해 주세요.</p>
+                        
+                        <div class="compatibility-input-box" style="display: flex; flex-direction: column; gap: 12px;">
+                            <input type="text" id="comp-name" class="custom-date-input" placeholder="상대방 이름" style="width: 100%;">
+                            
+                            <!-- 성별 선택 -->
+                            <div class="comp-gender-selection" style="display: flex; gap: 8px;">
+                                <button class="comp-gender-btn active" data-gender="male" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ff4757; background: rgba(255, 71, 87, 0.1); color: white; cursor: pointer; font-size: 0.85rem;">남자</button>
+                                <button class="comp-gender-btn" data-gender="female" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1); background: transparent; color: var(--text-muted); cursor: pointer; font-size: 0.85rem;">여자</button>
+                            </div>
+
+                            <!-- 양/음력 선택 -->
+                            <div class="comp-calendar-selection" style="display: flex; gap: 8px;">
+                                <button class="comp-cal-btn active" style="flex: 1; padding: 8px; border-radius: 6px; font-size: 0.8rem; border: 1px solid #ff4757; background: rgba(255, 71, 87, 0.1); color: white; cursor: pointer;">양력</button>
+                                <button class="comp-cal-btn" style="flex: 1; padding: 8px; border-radius: 6px; font-size: 0.8rem; border: 1px solid rgba(255, 255, 255, 0.1); background: transparent; color: var(--text-muted); cursor: pointer;">음력</button>
+                                <button class="comp-cal-btn" style="flex: 1; padding: 8px; border-radius: 6px; font-size: 0.8rem; border: 1px solid rgba(255, 255, 255, 0.1); background: transparent; color: var(--text-muted); cursor: pointer;">윤달</button>
+                            </div>
+
+                            <input type="date" id="comp-date" class="custom-date-input" style="width: 100%;">
+                            
+                            <!-- 태어난 시 -->
+                            <div class="comp-time-selection" style="display: flex; gap: 8px;">
+                                <select id="comp-hour" class="custom-date-input" style="flex: 1; height: 40px; font-size: 0.85rem; background-image: none;">
+                                    <option value="">태어난 시 (모름)</option>
+                                    <option value="0">00:30~02:30 (자시)</option>
+                                    <option value="2">02:30~04:30 (축시)</option>
+                                    <option value="4">04:30~06:30 (인시)</option>
+                                    <option value="6">06:30~08:30 (묘시)</option>
+                                    <option value="8">08:30~10:30 (진시)</option>
+                                    <option value="10">10:30~12:30 (사시)</option>
+                                    <option value="12">12:30~14:30 (오시)</option>
+                                    <option value="14">14:30~16:30 (미시)</option>
+                                    <option value="16">16:30~18:30 (신시)</option>
+                                    <option value="18">18:30~20:30 (유시)</option>
+                                    <option value="20">20:30~22:30 (술시)</option>
+                                    <option value="22">22:30~00:30 (해시)</option>
+                                </select>
+                            </div>
+
+                            <button id="btn-analyze-compatibility-v2" class="btn-primary-sm" style="width: 100%; height: 50px; background-color: #ff4757; color: white; border-radius: 12px; font-weight: 700; margin-top: 5px;">궁합 분석하기</button>
+                        </div>
+                        
+                        <div id="compatibility-result-v2" class="specific-result-area" style="margin-top: 20px; border-color: rgba(255, 71, 87, 0.2); background: rgba(255, 71, 87, 0.02);">
+                            <div class="placeholder-content">
+                                <i class="fa-solid fa-heart-pulse" style="color: #ff4757; opacity: 0.4;"></i>
+                                <p>상대방의 정보를 입력하시면<br>두 분의 조화와 인연을 분석해 드립니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 직업 탭 -->
+                <section id="tab-career" class="tab-content">
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-briefcase blue"></i> 직업 및 취업운</h3>
+                        <p class="analysis-text" id="career-intro">책임감이 강하고 규칙을 준수하는 성향으로 조직 내에서 능력을 인정받습니다. 공직, 교육, 행정 분야에서 특히 두각을 나타냅니다.</p>
+                        
+                        <div class="career-detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                            <div style="background: rgba(52, 152, 219, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(52, 152, 219, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #3498db; margin-bottom: 5px;"><i class="fa-solid fa-graduation-cap"></i> 학업운</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted);" id="career-study">끈기 있게 파고드는 집중력이 좋아 학문적 성취가 높습니다.</p>
+                            </div>
+                            <div style="background: rgba(52, 152, 219, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(52, 152, 219, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #3498db; margin-bottom: 5px;"><i class="fa-solid fa-file-signature"></i> 시험운</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted);" id="career-exam">국가 고시나 자격증 등 공적인 시험에서 운이 따릅니다.</p>
+                            </div>
+                            <div style="background: rgba(46, 204, 113, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(46, 204, 113, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #2ecc71; margin-bottom: 5px;"><i class="fa-solid fa-building"></i> 취업운</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted);" id="career-job">하반기에 특히 좋은 소식이 들려오는 흐름입니다.</p>
+                            </div>
+                            <div style="background: rgba(46, 204, 113, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(46, 204, 113, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #2ecc71; margin-bottom: 5px;"><i class="fa-solid fa-user-tie"></i> 승진운</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted);" id="career-promotion">상사의 신임을 얻어 승진의 기회가 빠르게 찾아옵니다.</p>
+                            </div>
+                            <div style="grid-column: span 2; background: rgba(241, 196, 15, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(241, 196, 15, 0.3);">
+                                <h4 style="font-size: 0.85rem; color: #f1c40f; margin-bottom: 5px;"><i class="fa-solid fa-trophy"></i> 최종 합격운</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted);" id="career-success">중요한 결전의 날에 본인의 실력 이상을 발휘하여 합격의 기쁨을 누릴 아주 강한 기운을 가지고 있습니다.</p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 10px;"><i class="fa-solid fa-layer-group" style="color: #3498db;"></i> 나에게 맞는 직업 종류</h4>
+                            <div class="career-tags" id="career-tags" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                <!-- Dynamic tags -->
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px; background: rgba(255, 255, 255, 0.02); padding: 15px; border-radius: 12px; border-left: 4px solid #3498db;">
+                            <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 8px;"><i class="fa-solid fa-lightbulb" style="color: #f1c40f;"></i> 전문가의 조언</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;" id="career-advice">"너무 완벽을 기하다가 시기를 놓칠 수 있으니, 때로는 과감한 결단력이 필요합니다."</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 인연/관계 탭 -->
+                <section id="tab-relation" class="tab-content">
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-user-group gold"></i> 육친 및 사회적 인연</h3>
+                        
+                        <!-- 육친운 -->
+                        <div class="relation-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                            <div class="relation-analysis-item" style="margin-bottom: 0;">
+                                <h4><i class="fa-solid fa-heart"></i> 배우자운</h4>
+                                <p style="font-size: 0.75rem;" id="rel-spouse">서로를 보완하며 백년해로할 수 있는 안정적인 기운입니다.</p>
+                            </div>
+                            <div class="relation-analysis-item" style="margin-bottom: 0;">
+                                <h4><i class="fa-solid fa-house-user"></i> 부모운</h4>
+                                <p style="font-size: 0.75rem;" id="rel-parent">자수성가하여 스스로 가문을 일으키는 기운이 강합니다.</p>
+                            </div>
+                            <div class="relation-analysis-item" style="margin-bottom: 0;">
+                                <h4><i class="fa-solid fa-user-friends"></i> 형제운</h4>
+                                <p style="font-size: 0.75rem;" id="rel-sibling">우애가 깊으며 어려울 때 의지가 되는 든든한 형제운입니다.</p>
+                            </div>
+                            <div class="relation-analysis-item" style="margin-bottom: 0;">
+                                <h4><i class="fa-solid fa-child"></i> 자식운</h4>
+                                <p style="font-size: 0.75rem;" id="rel-child">총명한 자손을 두며 만년에는 자식 덕에 평온을 누립니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 사회적 인연 (추가) -->
+                        <div class="relation-analysis-item">
+                            <h4><i class="fa-solid fa-users-viewfinder"></i> 친구 및 동료운</h4>
+                            <p id="rel-friend">주변에 의리가 깊은 친구들이 많으며, 특히 금(金) 기운을 가진 동료와 협업할 때 큰 성과를 거두는 상부상조의 운세입니다.</p>
+                        </div>
+                        <div class="relation-analysis-item">
+                            <h4><i class="fa-solid fa-arrow-up-from-bracket" style="color: #3498db;"></i> 상사 및 귀인운</h4>
+                            <p id="rel-boss">윗사람의 덕을 수동적으로 기다리기보다, 스스로의 성실함으로 신뢰를 쌓아 강력한 귀인의 도움을 이끌어내는 정직하고 힘 있는 기운입니다.</p>
+                        </div>
+                        <div class="relation-analysis-item">
+                            <h4><i class="fa-solid fa-people-pulling" style="color: #2ecc71;"></i> 부하 및 후배운</h4>
+                            <p id="rel-junior">아랫사람을 포용하고 이끄는 리더십이 뛰어나며, 본인이 베푼 덕이 나중에 큰 명예와 지지 세력으로 돌아오는 흐름을 가지고 있습니다.</p>
+                        </div>
+
+                        <div style="margin-top: 25px; background: rgba(255, 255, 255, 0.02); padding: 15px; border-radius: 12px; border-left: 4px solid var(--primary-gold);">
+                            <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 8px;"><i class="fa-solid fa-comments" style="color: var(--primary-gold);"></i> 인연의 지혜 조언</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;" id="rel-advice">"사람을 대할 때 '진심'이라는 무기를 가장 소중히 하세요. 폭넓은 인맥을 쌓으려 애쓰기보다, 한 사람을 만나더라도 그 깊이를 더할 때 본인의 사회적 지위와 명예가 자연스럽게 따라오게 됩니다. 올해는 특히 예의를 갖춘 태도가 귀인을 부르는 열쇠가 될 것입니다."</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 지정일운세 탭 -->
+                <section id="tab-specific-date" class="tab-content">
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-calendar-check"></i> 지정일 운세 확인</h3>
+                        <div class="date-picker-container">
+                            <input type="date" id="target-date" class="custom-date-input">
+                            <button id="btn-analyze-date" class="btn-primary-sm">분석하기</button>
+                        </div>
+                        
+                        <div id="specific-date-result" class="specific-result-area">
+                            <div class="placeholder-content">
+                                <i class="fa-regular fa-calendar-plus"></i>
+                                <p>궁금한 날짜를 선택하시면<br>그날의 특별한 운세를 분석해 드립니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Screen 3: 사주리스트 -->
+        <main id="screen-list" class="screen" style="display: none;">
+            <header class="list-header">
+                <button id="list-back-btn" class="list-header-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span>이전</span>
+                </button>
+                <h1 class="list-header-title">사주리스트</h1>
+                <button id="list-add-btn" class="list-header-btn list-header-btn--gold">
+                    <span>추가</span>
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </header>
+
+            <div class="list-content">
+                <p class="list-subtitle">원하시는 사용자를 선택해 주세요!</p>
+                <div id="saju-saved-container" class="saju-list-container">
+                    <!-- Saved items populated by JS -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
