@@ -172,7 +172,14 @@
                 <!-- 사주명식 표 -->
                 <section class="result-section">
                     <h2 class="section-title">사주 원국</h2>
-                    <div class="saju-table">
+                    <!-- 시간 보정 안내 박스 -->
+            <div id="time-correction-info" style="display: none; background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.2); padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; color: var(--text-main);">
+                <i class="fa-solid fa-clock-rotate-left" style="color: #3498db; margin-right: 6px;"></i>
+                <span id="time-correction-text">입력하신 시각은 표준시/서머타임 보정이 적용되었습니다.</span>
+            </div>
+
+            <div class="saju-table">
+
                         <div class="saju-header">
                             <div>시주(時柱)</div>
                             <div>일주(日柱)</div>
@@ -264,8 +271,10 @@
                                 <div id="year-jjg" class="extra-value jjg-value">辛편인<br>丁편재<br>戊정관</div>
                             </div>
                         </div>
-                        
+
                         <div class="saju-row extra-row">
+
+
                             <div class="saju-cell-extra">
                                 <div class="extra-label">12운성</div>
                                 <div id="hour-un" class="extra-value">절(絶)</div>
@@ -428,6 +437,16 @@
                             <span class="rel-label">관계운</span>
                             <span class="rel-value" id="relation-desc">광폭인맥</span>
                         </div>
+                        <div class="relation-card" style="border: 1px solid rgba(231, 76, 60, 0.2);">
+                            <i class="fa-solid fa-cloud-bolt" style="color: #e74c3c;"></i>
+                            <span class="rel-label">삼재(三災)</span>
+                            <span class="rel-value" id="samjae-desc" style="color: #e74c3c;">-</span>
+                        </div>
+                        <div class="relation-card" style="border: 1px solid rgba(241, 196, 15, 0.2);">
+                            <i class="fa-solid fa-star" style="color: #f1c40f;"></i>
+                            <span class="rel-label">명궁(命宮)</span>
+                            <span class="rel-value" id="myeong-gung-desc" style="color: #f1c40f;">-</span>
+                        </div>
                     </div>
                 </section>
 
@@ -579,6 +598,7 @@
                         </div>
                     </div>
                     <div class="summary-box">
+
                         <i class="fa-solid fa-mountain"></i> <span><strong id="summary-name">홍길동</strong>님은 <strong class="element-earth">토(土)</strong> 기운이 가장 강합니다.</span>
                     </div>
                 </section>
@@ -616,6 +636,10 @@
                 <button class="tab-btn" data-target="tab-career">직업</button>
                 <button class="tab-btn" data-target="tab-relation">인연</button>
                 <button class="tab-btn" data-target="tab-specific-date">지정일</button>
+                <button class="tab-btn" data-target="tab-shinsal">신살도표</button>
+                <button class="tab-btn" data-target="tab-moving">이사택일</button>
+                <button class="tab-btn" data-target="tab-naming">작명추천</button>
+
             </div>
 
             <div class="content-area tab-content-area">
@@ -699,6 +723,30 @@
                     <div class="analysis-section">
                         <h3 class="analysis-title"><i class="fa-solid fa-heart-pulse" style="color: #ff4757;"></i> 건강운 및 체질</h3>
                         <p class="analysis-text" id="comp-health">수(水) 기운이 담당하는 장기가 튼튼한 편입니다. 규칙적인 식습관과 스트레스 조절이 건강의 핵심입니다.</p>
+                    </div>
+
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-leaf" style="color: #2ecc71;"></i> 나에게 맞는 건강 & 행운 가이드</h3>
+                        <p class="analysis-text">나의 사주 기운을 보완하고 건강과 행운을 불러오는 맞춤 생활 습관입니다.</p>
+                        
+                        <div class="investment-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                            <div style="background: rgba(46, 204, 113, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(46, 204, 113, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #2ecc71; margin-bottom: 5px;"><i class="fa-solid fa-utensils"></i> 몸에 좋은 음식</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;" id="comp-good-food">분석 중...</p>
+                            </div>
+                            <div style="background: rgba(52, 152, 219, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(52, 152, 219, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #3498db; margin-bottom: 5px;"><i class="fa-solid fa-person-running"></i> 추천 운동</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;" id="comp-good-exercise">분석 중...</p>
+                            </div>
+                            <div style="background: rgba(241, 196, 15, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(241, 196, 15, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #f1c40f; margin-bottom: 5px;"><i class="fa-solid fa-palette"></i> 행운의 색상</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;" id="comp-good-color">분석 중...</p>
+                            </div>
+                            <div style="background: rgba(155, 89, 182, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(155, 89, 182, 0.2);">
+                                <h4 style="font-size: 0.85rem; color: #9b59b2; margin-bottom: 5px;"><i class="fa-solid fa-map-location-dot"></i> 행운의 장소</h4>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;" id="comp-good-place">분석 중...</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="analysis-section">
@@ -863,6 +911,29 @@
                             </div>
                         </div>
 
+                        <!-- 예체능 및 특기/취미 -->
+                        <div style="margin-top: 20px;">
+                            <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 10px;"><i class="fa-solid fa-palette" style="color: #e74c3c;"></i> 예체능 및 특기/취미 분석</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div style="background: rgba(231, 76, 60, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(231, 76, 60, 0.2);">
+                                    <h4 style="font-size: 0.85rem; color: #e74c3c; margin-bottom: 5px;"><i class="fa-solid fa-masks-theater"></i> 예체능 능력</h4>
+                                    <p style="font-size: 0.75rem; color: var(--text-muted);" id="career-art">감수성과 창의력이 뛰어나 디자인, 음악, 연출 등 예술 분야에서 잠재력이 돋보입니다.</p>
+                                </div>
+                                <div style="background: rgba(155, 89, 182, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(155, 89, 182, 0.2);">
+                                    <h4 style="font-size: 0.85rem; color: #9b59b2; margin-bottom: 5px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 특기 및 특색</h4>
+                                    <p style="font-size: 0.75rem; color: var(--text-muted);" id="career-special">문제를 직관적으로 풀어내는 분석력과 사람을 끌어당기는 독특한 매력이 무기입니다.</p>
+                                </div>
+                                <div style="background: rgba(52, 152, 219, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(52, 152, 219, 0.2);">
+                                    <h4 style="font-size: 0.85rem; color: #3498db; margin-bottom: 5px;"><i class="fa-solid fa-icons"></i> 취미 생활</h4>
+                                    <p style="font-size: 0.75rem; color: var(--text-muted);" id="career-hobby">손으로 만드는 공예, 요리나 음악 감상처럼 오감을 자극하는 활동으로 힐링을 얻습니다.</p>
+                                </div>
+                                <div style="background: rgba(46, 204, 113, 0.05); padding: 12px; border-radius: 10px; border: 1px solid rgba(46, 204, 113, 0.2);">
+                                    <h4 style="font-size: 0.85rem; color: #2ecc71; margin-bottom: 5px;"><i class="fa-solid fa-dumbbell"></i> 추천 운동</h4>
+                                    <p style="font-size: 0.75rem; color: var(--text-muted);" id="career-exercise">심폐지구력을 키우는 등산이나 테니스, 내면을 가다듬는 요가가 행운의 주파수를 높여줍니다.</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div style="margin-top: 20px;">
                             <h4 style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 10px;"><i class="fa-solid fa-layer-group" style="color: #3498db;"></i> 나에게 맞는 직업 종류</h4>
                             <div class="career-tags" id="career-tags" style="display: flex; flex-wrap: wrap; gap: 8px;">
@@ -940,6 +1011,156 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- 신살도표 탭 -->
+                <section id="tab-shinsal" class="tab-content">
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-shield-halved"></i> 세간 및 세지 길흉신 상세 도표</h3>
+                        <p class="analysis-text" style="margin-bottom: 20px;">선택한 해의 천간과 지지에 따른 세부적인 길흉신 목록입니다.</p>
+                        
+                        <div style="background: rgba(255, 255, 255, 0.02); padding: 15px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.1); margin-bottom: 15px;">
+                            <h4 style="font-size: 0.95rem; color: #e74c3c; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-circle-exclamation"></i> 세간흉신 (歲干凶神)
+                            </h4>
+                            <div id="segan-hungsin-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; font-size: 0.85rem; color: var(--text-main);">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+
+                        <div style="background: rgba(255, 255, 255, 0.02); padding: 15px; border-radius: 12px; border: 1px solid rgba(46, 204, 113, 0.1); margin-bottom: 15px;">
+                            <h4 style="font-size: 0.95rem; color: #2ecc71; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-face-smile"></i> 세지지길신 (歲支吉神)
+                            </h4>
+                            <div id="sejiji-gilsin-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; font-size: 0.85rem; color: var(--text-main);">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+
+                        <div style="background: rgba(255, 255, 255, 0.02); padding: 15px; border-radius: 12px; border: 1px solid rgba(231, 76, 60, 0.1);">
+                            <h4 style="font-size: 0.95rem; color: #e74c3c; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-skull"></i> 세지흉신 (歲支凶神)
+                            </h4>
+                            <div id="seji-hungsin-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; font-size: 0.85rem; color: var(--text-main);">
+                                <!-- Dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 이사택일 탭 -->
+                <section id="tab-moving" class="tab-content">
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-truck-moving"></i> 월별 이사 및 생활 택일</h3>
+                        <p class="analysis-text" style="margin-bottom: 15px;">전통 고전 비법에 따른 이사하기 좋은 날(길일)과 나쁜 날(흉일)입니다.</p>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label for="moving-month-select" style="font-size: 0.9rem; color: var(--text-muted); margin-right: 10px;">월 선택:</label>
+                            <select id="moving-month-select" class="saju-input" style="width: 100px; padding: 4px 8px; font-size: 0.9rem;">
+                                <option value="1">1월</option>
+                                <option value="2">2월</option>
+                                <option value="3">3월</option>
+                                <option value="4">4월</option>
+                                <option value="5">5월</option>
+                                <option value="6">6월</option>
+                                <option value="7">7월</option>
+                                <option value="8">8월</option>
+                                <option value="9">9월</option>
+                                <option value="10">10월</option>
+                                <option value="11">11월</option>
+                                <option value="12">12월</option>
+                            </select>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+                            <div style="background: rgba(46, 204, 113, 0.05); border: 1px solid rgba(46, 204, 113, 0.2); padding: 15px; border-radius: 12px;">
+                                <h4 style="color: #2ecc71; margin-bottom: 10px;"><i class="fa-solid fa-circle-check"></i> 이사 길일 (좋은 날)</h4>
+                                <div id="moving-good-days" style="font-size: 0.9rem; color: var(--text-main); line-height: 1.6;">-</div>
+                            </div>
+                            <div style="background: rgba(231, 76, 60, 0.05); border: 1px solid rgba(231, 76, 60, 0.2); padding: 15px; border-radius: 12px;">
+                                <h4 style="color: #e74c3c; margin-bottom: 10px;"><i class="fa-solid fa-circle-xmark"></i> 이사 흉일 (나쁜 날)</h4>
+                                <div id="moving-bad-days" style="font-size: 0.9rem; color: var(--text-main); line-height: 1.6;">-</div>
+                            </div>
+                        </div>
+
+                        <h3 class="analysis-title"><i class="fa-solid fa-compass"></i> 나이 및 성별별 이사 방위 길흉</h3>
+                        <p class="analysis-text" style="margin-bottom: 15px;">본인의 나이와 성별을 기준으로 한 8방위의 이사 길흉입니다.</p>
+                        <div id="moving-direction-result" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;">
+                            <!-- 9가지 방위 분석 결과 동적으로 채워짐 -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 작명 추천 탭 -->
+                <section id="tab-naming" class="tab-content">
+                    <div class="analysis-section">
+                        <h3 class="analysis-title"><i class="fa-solid fa-signature"></i> 성명학(작명) 추천 비서</h3>
+                        <p class="analysis-text" style="margin-bottom: 15px;">성씨의 한자 획수에 따라 가장 이상적인 이름 조합(수리/발음오행)을 찾아드립니다.</p>
+                        
+                        <div style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+                            <div>
+                                <label for="naming-surname-stroke" style="font-size: 0.9rem; color: var(--text-muted); margin-right: 10px;">성씨 한자 획수:</label>
+                                <select id="naming-surname-stroke" class="saju-input" style="width: 100px; padding: 4px 8px; font-size: 0.9rem;">
+                                    <option value="2">2획</option>
+                                    <option value="3">3획</option>
+                                    <option value="4">4획</option>
+                                    <option value="5">5획</option>
+                                    <option value="6">6획</option>
+                                    <option value="7">7획</option>
+                                    <option value="8">8획</option>
+                                    <option value="9">9획</option>
+                                    <option value="10">10획</option>
+                                    <option value="11">11획</option>
+                                    <option value="12">12획</option>
+                                    <option value="13">13획</option>
+                                    <option value="14">14획</option>
+                                    <option value="15">15획</option>
+                                    <option value="16">16획</option>
+                                    <option value="17">17획</option>
+                                    <option value="18">18획</option>
+                                    <option value="19">19획</option>
+                                    <option value="20">20획</option>
+                                    <option value="21">21획</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="naming-surname-char" style="font-size: 0.9rem; color: var(--text-muted); margin-right: 10px;">성씨 한글 발음:</label>
+                                <select id="naming-surname-char" class="saju-input" style="width: 100px; padding: 4px 8px; font-size: 0.9rem;">
+                                    <option value="ㄱ">김, 강, 구 등 (ㄱ)</option>
+                                    <option value="ㄴ">나, 노 등 (ㄴ)</option>
+                                    <option value="ㄷ">도, 동 등 (ㄷ)</option>
+                                    <option value="ㄹ">류 등 (ㄹ)</option>
+                                    <option value="ㅁ">문, 민 등 (ㅁ)</option>
+                                    <option value="ㅂ">박, 배 등 (ㅂ)</option>
+                                    <option value="ㅅ">서, 성, 신 등 (ㅅ)</option>
+                                    <option value="ㅇ">이, 안, 오 등 (ㅇ)</option>
+                                    <option value="ㅈ">장, 정, 조 등 (ㅈ)</option>
+                                    <option value="ㅊ">최, 채 등 (ㅊ)</option>
+                                    <option value="ㅎ">한, 황 등 (ㅎ)</option>
+                                </select>
+                            </div>
+                            
+                            <button id="btn-analyze-naming" class="custom-date-input" style="padding: 6px 15px; font-size: 0.9rem; cursor: pointer; border-color: #3498db; background: rgba(52,152,219,0.1); color: white;">추천받기</button>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                            <div style="background: rgba(52, 152, 219, 0.05); border: 1px solid rgba(52, 152, 219, 0.2); padding: 15px; border-radius: 12px;">
+                                <h4 style="color: #3498db; margin-bottom: 10px;"><i class="fa-solid fa-star"></i> 추천 이름 한자 획수 조합 (수리오행)</h4>
+                                <div id="naming-stroke-result" style="display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.9rem;">
+                                    성씨 획수를 선택하고 추천받기를 눌러주세요.
+                                </div>
+                            </div>
+
+                            <div style="background: rgba(155, 89, 182, 0.05); border: 1px solid rgba(155, 89, 182, 0.2); padding: 15px; border-radius: 12px;">
+                                <h4 style="color: #9b59b6; margin-bottom: 10px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 길한 발음오행 상생배합</h4>
+                                <div id="naming-pronunciation-result" style="font-size: 0.9rem; color: var(--text-main); line-height: 1.6;">
+                                    성씨 발음을 선택하고 추천받기를 눌러주세요.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div>
         </main>
 
@@ -966,6 +1187,15 @@
         </main>
     </div>
 
+    <script src="naming_data.js"></script>
+    <script src="moving_data.js"></script>
+    <script src="advanced_myeongli.js"></script>
+    <script src="advanced_interactions.js"></script>
+    <script src="time_correction.js"></script>
     <script src="app.js"></script>
+
+
+
+
 </body>
 </html>
